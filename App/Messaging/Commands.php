@@ -25,6 +25,10 @@ class Commands
     }
     function MessageCheck()
     {
-        echo $this->user . " " . $this->message;
+        echo $this->user . " " . $this->message.PHP_EOL;
+        if($this->message == "ping"){
+            return $message_answer = ["true", "pong"];
+        }
+        return $message_answer = ["false"];
     }
 }

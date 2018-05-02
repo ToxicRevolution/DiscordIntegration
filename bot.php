@@ -19,7 +19,10 @@ $client->on('ready', function () use ($client){
 $client->on('message', function($message) use ($client){
     if(!($message->author->tag == $client->user->tag)){
         $MessageHandler = new App\Messaging\Commands($message->author->tag, $message->content);
-        $MessageHandler->MessageCheck();
+        $messager = $MessageHandler->MessageCheck();
+        if($messager[0]){
+            $message->reply($messager[1]);
+        }
     }    
 });
 
