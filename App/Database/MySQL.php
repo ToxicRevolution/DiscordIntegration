@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Example:
  * $DB = new MySQL(DBName, DBTable);
@@ -27,29 +28,25 @@ class MySQL
         $this->DBName = $DBName;
         $this->DBTable = $DBTable;
         $this->Connect();
-        $this->$parameters = array();
+        $this->parameters = array();
     }
     private function Connect()
     {
         try{
-            $this->PDO = new PDO("mysql:dbname=" . $this->DBName . ";host=" . $this->Host . $this->DBPort . ";charset=utf8",
-                $this->DBUser, 
-                $this->DBPassword);
-            
+            $this->PDO = new \PDO("mysql:host={$this->Host};port={$this->DBPort};dbname={$this->DBName}", "root", "password");
             $this->bConnected = true;
-            echo "Here";
-        } catch (PDOException $e){
+        } catch (\PDOException $e){
             echo $e->getMessage();
             die();
         }
     }
     public function ConnectionClose()
     {
-        $this->pdo = null;
+        $this->PDO = null;
     }
     private function Init($query, $parameters = "")
     {
-        if(!$this->$bConnected){
+        if(!$this->bConnected){
             $this->Connect();            
         }
         try{
@@ -70,7 +67,7 @@ class MySQL
             }
             $this->succes = $this->sQuery->execute();
             $this->querycount++;
-        } catch (PDOException $e){
+        } catch (\PDOException $e){
             echo $e->getMessage();
             die();
         }
@@ -98,13 +95,13 @@ class MySQL
 		}
 		return $query;
     }
-    public function query($query, $params = null, $fetchmode = PDO::FETCH_ASSOC)
+    public function query($query, $params = null, $fetchmode = \PDO::FETCH_ASSOC)
 	{
 
-		$query        = trim($query);
+		$query = trim($query);
 		$rawStatement = explode(" ", $query);
 		$this->Init($query, $params);
-		$statement = strtolower($rawStatement[0]);
+        $statement = strtolower($rawStatement[0]);
 		if ($statement === 'select' || $statement === 'show') {
 			return $this->sQuery->fetchAll($fetchmode);
 		} elseif ($statement === 'insert' || $statement === 'update' || $statement === 'delete') {
@@ -118,9 +115,8 @@ class MySQL
         $this->Init($query, $params);
         return $this->sQuery->fetchColumn();
     }
-	public function row($query, $params = null, $fetchmode = PDO::FETCH_ASSOC)
+	public function row($query, $params = null, $fetchmode = \PDO::FETCH_ASSOC)
 	{
-        echo "here";
 		$this->Init($query, $params);
 		$resultRow = $this->sQuery->fetch($fetchmode);
 		$this->rowCount = $this->sQuery->rowCount();
